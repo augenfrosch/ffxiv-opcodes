@@ -53,13 +53,13 @@ def fetch_global_versions() -> list[Version]:
 def read_opcodes(path: str) -> list[str]:
 	with open(path) as f:
 		return json.load(f)
-	
-def new_opcode_count(diffs: list[Diff]) -> int:
-	count = 0
+
+def new_opcodes(diffs: list[Diff]) -> list[str]:
+	new_opcodes = []
 	for diff in diffs:
 		if len(diff.new) != 0:
-			count += 1
-	return count
+			new_opcodes.append(diff.new[0])
+	return new_opcodes
 
 def generate_diffs(reverse_mapping: dict[str, Optional[str]], target_opcodes: list[str]) -> list[Diff]:
 	# TODO: check that the order of opcodes actually stays consistent between versions
@@ -101,7 +101,7 @@ def main():
 		next_mapping = diffs_to_reverse_mapping(diffs)
 		reverse_mapping = combine_reverse_mappings(reverse_mapping, next_mapping)
 
-	assert len(target_opcodes) == new_opcode_count(diffs)
+	assert len(target_opcodes) == len(new_opcodes(diffs))
 
 	generated_diffs = generate_diffs(reverse_mapping, target_opcodes)
 
