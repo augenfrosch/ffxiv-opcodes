@@ -9,6 +9,7 @@ from typing import Optional
 
 GLOBAL_VERSIONS_URL = "https://github.com/xivdev/opcodediff/raw/refs/heads/main/automation/ffxiv_versions_global.json"
 DIFF_URL = "https://raw.githubusercontent.com/xivdev/opcodediff/refs/heads/main/diffs/{version}.diff.json"
+FFXIVOPCODES_REFERENCE_URL = "https://github.com/karashiiro/FFXIVOpcodes/raw/{commit}/opcodes.min.json"
 
 @dataclass
 class Diff:
@@ -55,15 +56,15 @@ def read_opcodes(path: str) -> list[str]:
 		return json.load(f)
 
 def new_opcodes(diffs: list[Diff]) -> list[str]:
-	new_opcodes = []
+	opcodes: list[str] = []
 	for diff in diffs:
-		if len(diff.new) != 0:
-			new_opcodes.append(diff.new[0])
-	return new_opcodes
+		if len(diff.new) == 1:
+			opcodes.append(diff.new[0])
+	return opcodes
 
 def generate_diffs(reverse_mapping: dict[str, Optional[str]], target_opcodes: list[str]) -> list[Diff]:
 	# TODO: check that the order of opcodes actually stays consistent between versions
-	diffs: list[Diff] = list()
+	diffs: list[Diff] = []
 
 	opcode_idx = 0
 	for (global_opcode, old_opcode) in reverse_mapping.items():
@@ -79,18 +80,11 @@ def generate_diffs(reverse_mapping: dict[str, Optional[str]], target_opcodes: li
 	return diffs
 
 
-def main():
-	if len(sys.argv) < 2:
-		print(f"Usage: {sys.argv[0]} <version> <data>")
-		print(f"  e.g. {sys.argv[0]} 7.25h3 data/tw.json")
-		sys.exit(1)
-	target_version = sys.argv[1]
-	target_opcodes = read_opcodes(sys.argv[2])
-
+def generate_opcodediff_history_based_diffs(target_version: str, target_opcodes: list[str]) -> list[Diff]:
 	global_versions = fetch_global_versions()
 	global_versions.reverse()
 	global_versions = [version.retail_version for version in global_versions]
-
+	
 	global_version = global_versions[0]
 	print(f"[INFO] Version: {global_version}", file=sys.stderr)
 	diffs = fetch_diffs(global_version)
@@ -103,8 +97,37 @@ def main():
 
 	assert len(target_opcodes) == len(new_opcodes(diffs))
 
-	generated_diffs = generate_diffs(reverse_mapping, target_opcodes)
+	return generate_diffs(reverse_mapping, target_opcodes)
 
+def generate_single_version_based_diffs(target_version: str, target_opcodes: list[str]) -> list[Diff]:
+	target_version_diffs = fetch_diffs(target_version)
+	global_version_opcodes = new_opcodes(target_version_diffs)
+	assert len(target_opcodes) == len(global_version_opcodes)
+
+	diffs: list[Diff] = []
+	for i in range(len(target_opcodes)):
+		diff = Diff([global_version_opcodes[i]], [target_opcodes[i]])
+
+		diffs.append(diff)
+
+	return(diffs)
+
+
+def main():
+	if len(sys.argv) < 3 or len(sys.argv) > 4:
+		print(f"Usage: {sys.argv[0]} <version> <data> <history_based>")
+		print(f"  e.g. {sys.argv[0]} 7.25h3 data/tw.json")
+		sys.exit(1)
+	target_version = sys.argv[1]
+	target_opcodes = read_opcodes(sys.argv[2])
+	history_based = False if len(sys.argv) == 3 else sys.argv[3].lower() in ["true", "t", "yes", "y"]
+	
+	if history_based:
+		# This produces incorrect results. TODO: look into this, maybe order related
+		generated_diffs = generate_opcodediff_history_based_diffs(target_version, target_opcodes)
+	else:
+		generated_diffs = generate_single_version_based_diffs(target_version, target_opcodes)
+	
 	print(json.dumps(generated_diffs, default=lambda o: o.__dict__))
 
 
