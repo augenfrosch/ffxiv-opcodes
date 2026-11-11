@@ -5,7 +5,8 @@
 
 import typing
 if typing.TYPE_CHECKING:
-	from ghidra.ghidra_builtins import *
+	# No idea why this is not fully working :/ but not ignoring the error is even more annoying
+	from ghidra.ghidra_builtins import * # pyright: ignore[reportMissingModuleSource]
 
 import json
 
@@ -45,14 +46,19 @@ found = memory.findBytes(min_address, pattern, mask, True, monitor)
 if not found:
 	raise Exception("Pattern not found")
 function = getFunctionAt(found)
-if not function and askYesNo(
-	"Function not regististered as such by Ghidra",
-	"For convenience a full auto-analysis can be skipped, and only the relevant function can be disassembled (and auto-analyzed).  Proceed?"):
-	disassembled = disassemble(found)
-	if not disassembled:
-		raise Exception("Failed to disassemble")
-	function = createFunction(found, None)
-	analyzeChanges(currentProgram)
+if not function:
+	if isRunningHeadless():
+		import logging
+		logging.info("Running in headless environment. Disassembling and auto-analyzing function since it isn't registered as such.")
+	if isRunningHeadless() or askYesNo(
+		"Function not regististered as such by Ghidra",
+		"For convenience a full auto-analysis can be skipped, and only the relevant function can be disassembled (and auto-analyzed).  Proceed?"
+	):
+		disassembled = disassemble(found)
+		if not disassembled:
+			raise Exception("Failed to disassemble")
+		function = createFunction(found, None)
+		analyzeChanges(currentProgram)
 if not function:
 	raise Exception("Failed to find function")
 
@@ -66,4 +72,4 @@ for instr in instructions:
 			opcode = int(symbol_name_parts[1], 16)
 			opcodes.append(hex(opcode))
 
-print(json.dumps(opcodes))
+print(json.dumps(opcodes, indent="\t"), end="")

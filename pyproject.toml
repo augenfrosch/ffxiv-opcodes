@@ -1,0 +1,25 @@
+[project]
+name = "ffxiv-opcodes"
+version = "0.1.0"
+description = "Miscellaneous FFXIV opcode related scripts"
+readme = "README.md"
+authors = [
+    { name = "augenfrosch", email = "45207902+augenfrosch@users.noreply.github.com" }
+]
+requires-python = ">=3.15"
+dependencies = [
+    "pyghidra>=3.2.0"
+]
+
+[project.scripts]
+ffxiv-opcodes = "ffxiv_opcodes:main"
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ghidra-stubs==12.2",
+    "java-stubs-converted-strings>=0.1.0",
+]

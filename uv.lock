@@ -1,0 +1,87 @@
+version = 1
+revision = 5
+requires-python = ">=3.15"
+
+[[package]]
+name = "ffxiv-opcodes"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "pyghidra" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ghidra-stubs" },
+    { name = "java-stubs-converted-strings" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pyghidra", specifier = ">=3.2.0" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "ghidra-stubs", specifier = "==12.2" },
+    { name = "java-stubs-converted-strings", specifier = ">=0.1.0" },
+]
+
+[[package]]
+name = "ghidra-stubs"
+version = "12.2"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ba/a6/7b161a8b91d194967f7bcc72aeccbb426f946375ae3b26d73b7fdd610575/ghidra_stubs-12.2-py3-none-any.whl", hash = "sha256:7cede99479cf735b4e9f2af75d37c8e375f2678f88d227945f99ae6c7d766cc5", size = 3813941, upload-time = "2026-10-22T12:22:38.964Z" },
+]
+
+[[package]]
+name = "java-stubs-converted-strings"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jpype1" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0e/a8/0f775fdf231db7b4e33fc27bc3c846499e910277e604bafff4ee4ed50df3/java_stubs_converted_strings-0.1.0.tar.gz", hash = "sha256:39299d54eaf14013fb26085f239fe0a66c5cd0e97cf5dbeeea223925f24ba219", size = 247488, upload-time = "2025-12-29T22:39:53.817Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b6/d6/cfe0031028170bcd036ccbd194b1e717dab4f1f7d5c3d48e497d34d50895/java_stubs_converted_strings-0.1.0-py3-none-any.whl", hash = "sha256:da6310989b09d3097ba10969827d22ecbe94a0178c21d165fdeb8029d6615875", size = 280180, upload-time = "2025-12-29T22:39:56.897Z" },
+]
+
+[[package]]
+name = "jpype1"
+version = "1.7.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/48/a2/5d27e81d24eef64668bf702bfe0e091cc48388b4666f36e025243eb9d827/jpype1-1.7.1.tar.gz", hash = "sha256:3cd88838dc3d2d546f7eaeadaaff864e590010c15f2b6a44b6f37e60796a14b2", size = 783791, upload-time = "2026-05-06T23:55:10.664Z" }
+
+[[package]]
+name = "packaging"
+version = "26.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/fa/3944b40b07da9ce895c0e6303a5ab7d53da063554f534556b134a54d6093/packaging-26.3.tar.gz", hash = "sha256:94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79", size = 313412, upload-time = "2026-08-04T18:15:28.737Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl", hash = "sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c", size = 129956, upload-time = "2026-08-04T18:15:27.159Z" },
+]
+
+[[package]]
+name = "pyghidra"
+version = "3.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jpype1" },
+    { name = "packaging" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/59/35/0d9816d4284a3684b14d75a97935e09bf55901ab6b8fc0140b8271273605/pyghidra-3.2.0.tar.gz", hash = "sha256:122859794e313947f875c8bd1807ab6386b9664d1ac9f181f6bf3fae6a183d8e", size = 54823, upload-time = "2026-10-22T12:21:07.034Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6a/42/4e8f06dfe50d7b14aa1f67f972edefeacbdcd6332cfd581b1ea396075c90/pyghidra-3.2.0-py3-none-any.whl", hash = "sha256:9a8c4a5825daa51fc1a94c13380c9526c7ceda2e51bdba5e05c6f035c3c6d971", size = 52304, upload-time = "2026-10-22T12:21:23.497Z" },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.16.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5", size = 113555, upload-time = "2026-07-02T08:40:05.92Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8", size = 45571, upload-time = "2026-07-02T08:40:04.659Z" },
+]
