@@ -1,12 +1,11 @@
-from dataclasses import dataclass
-
 import json, logging
+from dataclasses import dataclass
 from types import SimpleNamespace
 import urllib.request
 
 
-OPCODEDIFF_FFXIV_GLOBAL_VERSION_JSON_URL = "https://github.com/xivdev/opcodediff/raw/refs/heads/main/automation/ffxiv_versions_global.json"
-OPCODEDIFF_PATCH_DIFF_JSON_URL_TEMPLATE = "https://github.com/xivdev/opcodediff/raw/refs/heads/main/diffs/{version}.diff.json"
+OPCODEDIFF_FFXIV_GLOBAL_VERSION_JSON_URL = "https://raw.githubusercontent.com/xivdev/opcodediff/refs/heads/main/automation/ffxiv_versions_global.json"
+OPCODEDIFF_PATCH_DIFF_JSON_URL_TEMPLATE = "https://raw.githubusercontent.com/xivdev/opcodediff/refs/heads/main/diffs/{version}.diff.json"
 
 @dataclass
 class Version:
@@ -19,7 +18,7 @@ class Diff:
 	new: list[str]
 
 
-def find_global_opcodes_for_opcode_count(opcode_count: int) -> tuple[str, list[str]]:
+def find_latest_global_opcodes_for_opcode_count(opcode_count: int) -> tuple[str, list[str]]:
 	logging.info(f"Searching for global version with matching opcode count: {opcode_count}")
 	with urllib.request.urlopen(OPCODEDIFF_FFXIV_GLOBAL_VERSION_JSON_URL) as response:
 		versions: list[Version] = json.loads(response.read().decode(), object_hook=lambda d: SimpleNamespace(**d))
@@ -30,7 +29,7 @@ def find_global_opcodes_for_opcode_count(opcode_count: int) -> tuple[str, list[s
 			logging.debug(f"version={version},len(opcodes)={len(opcodes)}")
 
 			if len(opcodes) == opcode_count:
-				logging.info(f"Found version: {version}")
+				logging.info(f"Found version: {version.retail_version} ({version.version_string})")
 				return (version.retail_version, opcodes)
 
 	raise Exception(f"Failed to find opcodes of version with {opcode_count} opcodes")
